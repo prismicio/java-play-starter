@@ -1,0 +1,9 @@
+@(document: io.prismic.Document)
+
+@main(s"Document detail ${document.getSlug()}") {
+
+    <article id="@document.getId()">
+      @Html(document.asHtml(prismic.getLinkResolver()))
+    </article>
+
+}

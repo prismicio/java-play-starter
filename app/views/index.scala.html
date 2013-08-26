@@ -1,0 +1,30 @@
+@(someDocuments: java.util.List[io.prismic.Document])
+
+@main("All documents") {
+
+    <form action="@routes.Application.search(null, prismic.maybeRef())" method="GET">
+      <input type="text" name="q" value="">
+      <input type="submit" value="Search">
+    </form>
+
+    <hr>
+
+    <h2>
+      @someDocuments.size() match {
+        case 0 => { No documents found }
+        case 1 => { One document found }
+        case n => { @n documents found }
+      }
+    </h2>
+
+    <ul>
+      @for(document <- someDocuments) {
+        <li>
+          <a href="@routes.Application.detail(document.getId(), document.getSlug(), prismic.maybeRef())">
+            @document.getSlug()
+          </a>
+        </li>
+      }
+    </ul>
+
+}

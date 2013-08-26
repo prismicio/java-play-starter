@@ -1,0 +1,25 @@
+@(q: String, documents: java.util.List[io.prismic.Document])
+
+@main("Search results") {
+
+    <h1>
+      @documents.size match {
+        case 0 => { No results found }
+        case 1 => { One document found }
+        case n => { @n documents found }
+      }
+    </h1>
+
+    <ul>
+      @for(document <- documents) {
+        <li>
+          <a href="@prismic.getLinkResolver().resolve(document)">@document.getSlug()</a>
+        </li>
+      }
+    </ul>
+
+    <p>
+      <a href="@routes.Application.index(prismic().maybeRef())">Back to home</a>
+    </p>
+
+}
