@@ -48,8 +48,8 @@ public class Application extends Controller {
   // -- Document detail
   @Prismic.Action
   public static Result detail(String id, String slug, String ref) {
-    Document maybeDocument = getDocument(prismic(), id);
-    String checked = checkSlug(maybeDocument, slug);
+    Document maybeDocument = prismic().getDocument(id);
+    String checked = prismic().checkSlug(maybeDocument, slug);
     if(checked == null) {
       return ok(views.html.detail.render(maybeDocument));
     }
