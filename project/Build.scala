@@ -24,7 +24,7 @@ object ApplicationBuild extends Build {
     resolvers += "Local Maven Repository" at "file://"+Path.userHome.absolutePath+"/.m2/repository",
     
     // The Scala kit
-    libraryDependencies += "io.prismic" % "java-kit" % "1.0-SNAPSHOT"
+    libraryDependencies += "io.prismic" % "java-kit" % "1.0-M2"
   )
 
 }
