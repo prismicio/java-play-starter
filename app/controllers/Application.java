@@ -11,32 +11,6 @@ import io.prismic.*;
 import static controllers.Prismic.*;
 
 public class Application extends Controller {
-
-  // -- Resolve links to documents
-  final public static LinkResolver linkResolver(Api api, String ref, Http.Request request) {
-    return new LinkResolver(api, ref, request);
-  } 
-
-  public static class LinkResolver extends DocumentLinkResolver {
-    final Api api;
-    final String ref;
-    final Http.Request request;
-
-    public LinkResolver(Api api, String ref, Http.Request request) {
-      this.api = api;
-      this.ref = ref;
-      this.request = request;
-    }
-
-    public String resolve(Fragment.DocumentLink link) {
-      return routes.Application.detail(link.getId(), link.getSlug(), ref).absoluteURL(request);
-    }
-  }
-
-  // -- Page not found
-  static Result pageNotFound() {
-    return notFound("Page not found");
-  }
   
   // -- Home page
   @Prismic.Action
@@ -70,5 +44,37 @@ public class Application extends Controller {
     }
     return ok(views.html.search.render(q, results));
   }
+
+
   
+  // ---- Links
+
+  
+
+  // -- Resolve links to documents
+  final public static LinkResolver linkResolver(Api api, String ref, Http.Request request) {
+    return new LinkResolver(api, ref, request);
+  } 
+
+  public static class LinkResolver extends DocumentLinkResolver {
+    final Api api;
+    final String ref;
+    final Http.Request request;
+
+    public LinkResolver(Api api, String ref, Http.Request request) {
+      this.api = api;
+      this.ref = ref;
+      this.request = request;
+    }
+
+    public String resolve(Fragment.DocumentLink link) {
+      return routes.Application.detail(link.getId(), link.getSlug(), ref).absoluteURL(request);
+    }
+  }
+
+  // -- Page not found
+  static Result pageNotFound() {
+    return notFound("Page not found");
+  }
+
 }
