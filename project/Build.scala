@@ -18,11 +18,11 @@ object ApplicationBuild extends Build {
     templatesImport += "controllers.Prismic._",
 
     // Prismic.io Maven repository
-    resolvers += "Prismic.io kits" at "https://github.com/prismicio/repository/raw/master/maven/",
+    resolvers += "Prismic.io kits" at "https://s3.amazonaws.com/prismic-maven-kits/repository/maven/",
 
     // Local Maven
     resolvers += "Local Maven Repository" at "file://"+Path.userHome.absolutePath+"/.m2/repository",
-    
+
     // The Scala kit
     libraryDependencies += "io.prismic" % "java-kit" % "1.0-M4"
   )
