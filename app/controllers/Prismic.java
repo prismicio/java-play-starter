@@ -3,6 +3,7 @@ package controllers;
 import play.*;
 import play.mvc.*;
 import play.libs.*;
+import play.libs.ws.*;
 
 import java.net.*;
 import java.util.*;
@@ -105,7 +106,10 @@ public class Prismic extends Controller {
 
     // -- Helper: Retrieve a single document by Id
     public Document getDocument(String id) {
-      List<Document> results = this.getApi().getForm("everything").query("[[:d = at(document.id, \"" + id + "\")]]").ref(this.getRef()).submit();
+      List<Document> results = this.getApi().getForm("everything")
+        .ref(this.getRef())
+        .query(Predicates.at("document.id", id))
+        .submit().getResults();
       if(results.size() > 0) {
         return results.get(0);
       }
@@ -117,15 +121,12 @@ public class Prismic extends Controller {
       if(ids.isEmpty()) {
         return new ArrayList<Document>();
       } else {
-        StringBuilder q = new StringBuilder();
-        q.append("[[:d = any(document.id, [");
-        String sep = "";
-        for(String id: ids) {
-          q.append(sep + "\"" + id + "\"");
-          sep = ",";
-        }
-        q.append("\"]]");
-        return this.getApi().getForm("everything").query(q.toString()).ref(this.getRef()).submit();
+        return this.getApi()
+          .getForm("everything")
+          .query(Predicates.any("document.id", ids))
+          .ref(this.getRef())
+          .submit()
+          .getResults();
       }
     }
 
@@ -171,7 +172,7 @@ public class Prismic extends Controller {
 
   public static class ActionImpl extends play.mvc.Action<Prismic.Action> {
 
-    public F.Promise<SimpleResult> call(Http.Context ctx) throws Throwable {
+    public F.Promise<Result> call(Http.Context ctx) throws Throwable {
       // Retrieve the accessToken from the Play session or from the configuration
       String accessToken = ctx.session().get(ACCESS_TOKEN);
       if(accessToken == null) {
@@ -235,7 +236,7 @@ public class Prismic extends Controller {
     body.append(URLEncoder.encode(config("prismic.clientId"), "utf-8"));
     body.append("&client_secret=");
     body.append(URLEncoder.encode(config("prismic.clientSecret"), "utf-8")); 
-    WS.Response response = WS.url(prismic().getApi().getOAuthTokenEndpoint()).setHeader(CONTENT_TYPE, "application/x-www-form-urlencoded").post(body.toString()).get();
+    WSResponse response = WS.url(prismic().getApi().getOAuthTokenEndpoint()).setHeader(CONTENT_TYPE, "application/x-www-form-urlencoded").post(body.toString()).get(60000);
     if(response.getStatus() == 200) {
       String accessToken = response.asJson().path("access_token").asText();
       String redirectUrl = redirect_uri;

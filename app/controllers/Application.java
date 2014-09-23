@@ -15,7 +15,7 @@ public class Application extends Controller {
   // -- Home page
   @Prismic.Action
   public static Result index(String ref) {
-    List<Document> someDocuments = prismic().getApi().getForm("everything").ref(prismic().getRef()).submit();
+    List<Document> someDocuments = prismic().getApi().getForm("everything").ref(prismic().getRef()).submit().getResults();
     return ok(views.html.index.render(someDocuments));
   }
 
@@ -40,7 +40,7 @@ public class Application extends Controller {
   public static Result search(String q, String ref) {
     List<Document> results = new ArrayList<Document>();
     if(q != null && !q.trim().isEmpty()) {
-      results = prismic().getApi().getForm("everything").query("[[:d = fulltext(document, \"" + q + "\")]]").ref(prismic().getRef()).submit();
+      results = prismic().getApi().getForm("everything").query(Predicates.fulltext("document", q)).ref(prismic().getRef()).submit().getResults();
     }
     return ok(views.html.search.render(q, results));
   }
