@@ -3,18 +3,16 @@
 # ~~~~
 
 # Home page
-GET     /                                           controllers.Application.index(ref: String ?= null)
+GET     /                                           controllers.Application.index()
 
 # Document detail
-GET     /documents/$id<[-_a-zA-Z0-9]{16}>/:slug     controllers.Application.detail(id, slug, ref: String ?= null)
+GET     /documents/$id<[-_a-zA-Z0-9]{16}>/:slug     controllers.Application.detail(id, slug)
 
 # Basic search
-GET     /search                                     controllers.Application.search(q: String ?= null, ref: String ?= null)
+GET     /search                                     controllers.Application.search(q: String ?= null)
 
-# Prismic.io OAuth
-GET     /signin                                     controllers.Prismic.signin
-GET     /auth_callback                              controllers.Prismic.callback(code: String ?= null, redirect_uri: String ?= null)
-POST    /signout                                    controllers.Prismic.signout()
+# Preview
+GET     /preview                                    controllers.Prismic.preview(token: String)
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file                               controllers.Assets.at(path="/public", file)

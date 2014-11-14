@@ -2,7 +2,7 @@
 
 @main("All documents") {
 
-    <form action="@routes.Application.search(null, prismic.maybeRef())" method="GET">
+    <form action="@routes.Application.search(null)" method="GET">
       <input type="text" name="q" value="">
       <input type="submit" value="Search">
     </form>
@@ -20,7 +20,7 @@
     <ul>
       @for(document <- someDocuments) {
         <li>
-          <a href="@routes.Application.detail(document.getId(), document.getSlug(), prismic.maybeRef())">
+          <a href="@routes.Application.detail(document.getId(), document.getSlug())">
             @document.getSlug()
           </a>
         </li>

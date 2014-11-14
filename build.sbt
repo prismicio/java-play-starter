@@ -6,7 +6,9 @@ version := "1.1"
 
 scalaVersion := "2.11.1"
 
-libraryDependencies += "io.prismic" % "java-kit" % "1.0.4"
+resolvers += Resolver.mavenLocal
+
+libraryDependencies += "io.prismic" % "java-kit" % "1.0.5"
 
 libraryDependencies += javaWs
 
