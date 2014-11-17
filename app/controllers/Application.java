@@ -45,14 +45,10 @@ public class Application extends Controller {
     return ok(views.html.search.render(q, results));
   }
 
-
-  
   // ---- Links
 
-  
-
   // -- Resolve links to documents
-  final public static LinkResolver linkResolver(Api api, Http.Request request) {
+  public static LinkResolver linkResolver(Api api, Http.Request request) {
     return new LinkResolver(api, request);
   } 
 

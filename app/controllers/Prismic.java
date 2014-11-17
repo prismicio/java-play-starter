@@ -5,11 +5,13 @@ import play.mvc.*;
 import play.libs.*;
 import play.libs.ws.*;
 
+import java.lang.Exception;
 import java.net.*;
 import java.util.*;
 import java.lang.annotation.*;
 
 import io.prismic.*;
+import scala.util.control.*;
 
 public class Prismic extends Controller {
 
@@ -175,7 +177,18 @@ public class Prismic extends Controller {
       ctx.args.put(PRISMIC_CONTEXT, prismicContext);
 
       // Go!
-      return delegate.call(ctx);
+      try {
+        return delegate.call(ctx);
+      } catch (Exception e) {
+        if ("1".equals(flash("clearing"))) {
+          // Prevent infinite redirect loop if the exception is not due to the preview cookie
+          return delegate.call(ctx);
+        } else {
+          response().discardCookie(io.prismic.Prismic.PREVIEW_COOKIE);
+          flash("clearing", "1");
+          return F.Promise.pure(redirect(routes.Application.index()));
+        }
+      }
     }
 
   }
