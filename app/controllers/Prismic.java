@@ -61,9 +61,9 @@ public class Prismic extends Controller {
     final Api api;
     final String ref;
     final String accessToken;
-    final DocumentLinkResolver linkResolver;
+    final LinkResolver linkResolver;
 
-    public Context(Api api, String ref, String accessToken, DocumentLinkResolver linkResolver) {
+    public Context(Api api, String ref, String accessToken, LinkResolver linkResolver) {
       this.api = api;
       this.ref = ref;
       this.accessToken = accessToken;
@@ -78,7 +78,7 @@ public class Prismic extends Controller {
       return ref;
     }
 
-    public DocumentLinkResolver getLinkResolver() {
+    public LinkResolver getLinkResolver() {
       return linkResolver;
     }
 

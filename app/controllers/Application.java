@@ -52,7 +52,7 @@ public class Application extends Controller {
     return new LinkResolver(api, request);
   } 
 
-  public static class LinkResolver extends DocumentLinkResolver {
+  public static class LinkResolver extends SimpleLinkResolver {
     final Api api;
     final Http.Request request;
 
