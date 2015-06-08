@@ -4,11 +4,11 @@ name := "prismicio-starter"
 
 version := "1.1"
 
-scalaVersion := "2.11.1"
+scalaVersion := "2.11.6"
 
 resolvers += Resolver.mavenLocal
 
-libraryDependencies += "io.prismic" % "java-kit" % "1.2.1"
+libraryDependencies += "io.prismic" % "java-kit" % "1.2.4"
 
 libraryDependencies += javaWs
 
