@@ -1,22 +1,14 @@
-import java.util.ArrayList;
-import java.util.HashMap;
+import io.prismic.Document;
+import org.junit.Test;
+import play.twirl.api.Content;
+
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
-import org.codehaus.jackson.JsonNode;
-import org.junit.*;
-
-import play.mvc.*;
-import play.test.*;
-import play.data.DynamicForm;
-import play.data.validation.ValidationError;
-import play.data.validation.Constraints.RequiredValidator;
-import play.i18n.Lang;
-import play.libs.F;
-import play.libs.F.*;
-
-import static play.test.Helpers.*;
-import static org.fest.assertions.Assertions.*;
+import static org.fest.assertions.Assertions.assertThat;
+import static play.test.Helpers.contentAsString;
+import static play.test.Helpers.contentType;
 
 
 /**
@@ -35,9 +27,11 @@ public class ApplicationTest {
     
     @Test
     public void renderTemplate() {
-        Content html = views.html.index.render("Your new application is ready.");
+        Document document = new Document("id", "uid", "StructuredText", "href", Collections.<String>emptySet(), Arrays.asList("My super document"), Collections.emptyMap());
+        List<Document> someDocuments = Arrays.asList(document);
+        Content html = views.html.index.render(someDocuments);
         assertThat(contentType(html)).isEqualTo("text/html");
-        assertThat(contentAsString(html)).contains("Your new application is ready.");
+        assertThat(contentAsString(html)).contains("My super document");
     }
   
    
