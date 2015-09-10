@@ -16,3 +16,4 @@ TwirlKeys.templateImports += "controllers.Prismic._"
 
 lazy val root = (project in file(".")).enablePlugins(PlayJava)
 
+routesGenerator := InjectedRoutesGenerator

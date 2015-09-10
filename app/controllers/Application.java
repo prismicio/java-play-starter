@@ -11,20 +11,23 @@ import io.prismic.*;
 import static controllers.Prismic.*;
 
 public class Application extends Controller {
-  
+
   // -- Home page
   @Prismic.Action
-  public static Result index() {
+  public Result index() {
     List<Document> someDocuments = prismic().getApi().getForm("everything").ref(prismic().getRef()).submit().getResults();
     return ok(views.html.index.render(someDocuments));
   }
 
   // -- Document detail
   @Prismic.Action
-  public static Result detail(String id, String slug) {
+  public Result detail(String id, String slug) {
     Document maybeDocument = prismic().getDocument(id);
     String checked = prismic().checkSlug(maybeDocument, slug);
     if(checked == null) {
+      for (String key: maybeDocument.getFragments().keySet()) {
+        System.out.println("Got key: " + key);
+      }
       return ok(views.html.detail.render(maybeDocument));
     }
     else if(DOCUMENT_NOT_FOUND.equals(checked)) {
@@ -37,7 +40,7 @@ public class Application extends Controller {
 
   // -- Basic Search
   @Prismic.Action
-  public static Result search(String q) {
+  public Result search(String q) {
     List<Document> results = new ArrayList<Document>();
     if(q != null && !q.trim().isEmpty()) {
       results = prismic().getApi().getForm("everything").query(Predicates.fulltext("document", q)).ref(prismic().getRef()).submit().getResults();
@@ -50,7 +53,7 @@ public class Application extends Controller {
   // -- Resolve links to documents
   public static LinkResolver linkResolver(Api api, Http.Request request) {
     return new LinkResolver(api, request);
-  } 
+  }
 
   public static class LinkResolver extends SimpleLinkResolver {
     final Api api;
@@ -67,7 +70,7 @@ public class Application extends Controller {
   }
 
   // -- Page not found
-  static Result pageNotFound() {
+  Result pageNotFound() {
     return notFound("Page not found");
   }
 

@@ -21,7 +21,7 @@ prismic.api="https://lesbonneschoses.prismic.io/api"
 # prismic.clientSecret="xxxxxx"
 ```
 
-Run your play application using either the `play run` or the `sbt run` command and open your browser at http://localhost:9000/
+Run your play application using either the `sbt run` command or using activator and open your browser at http://localhost:9000/
 
 ### Licence
 
