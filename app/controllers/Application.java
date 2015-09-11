@@ -14,14 +14,14 @@ public class Application extends Controller {
 
   // -- Home page
   @Prismic.Action
-  public Result index() {
+  public static Result index() {
     List<Document> someDocuments = prismic().getApi().getForm("everything").ref(prismic().getRef()).submit().getResults();
     return ok(views.html.index.render(someDocuments));
   }
 
   // -- Document detail
   @Prismic.Action
-  public Result detail(String id, String slug) {
+  public static Result detail(String id, String slug) {
     Document maybeDocument = prismic().getDocument(id);
     String checked = prismic().checkSlug(maybeDocument, slug);
     if(checked == null) {
@@ -40,7 +40,7 @@ public class Application extends Controller {
 
   // -- Basic Search
   @Prismic.Action
-  public Result search(String q) {
+  public static Result search(String q) {
     List<Document> results = new ArrayList<Document>();
     if(q != null && !q.trim().isEmpty()) {
       results = prismic().getApi().getForm("everything").query(Predicates.fulltext("document", q)).ref(prismic().getRef()).submit().getResults();
@@ -70,7 +70,7 @@ public class Application extends Controller {
   }
 
   // -- Page not found
-  Result pageNotFound() {
+  static Result pageNotFound() {
     return notFound("Page not found");
   }
 

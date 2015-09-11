@@ -197,7 +197,7 @@ public class Prismic extends Controller {
   // -- Previews
   // --
   @Prismic.Action
-  public Result preview(String token) {
+  public static Result preview(String token) {
     String indexUrl = controllers.routes.Application.index().url();
     String url = prismic().api.previewSession(token, prismic().getLinkResolver(), indexUrl);
     response().setCookie(io.prismic.Prismic.PREVIEW_COOKIE, token, 1800);

@@ -4,14 +4,11 @@
 
 # Home page
 GET     /                                           controllers.Application.index()
-
-# Document detail
+# Document detai
 GET     /documents/$id<[-_a-zA-Z0-9]{16}>/:slug     controllers.Application.detail(id, slug)
-
-# Basic search
+# Basic searc
 GET     /search                                     controllers.Application.search(q: String ?= null)
-
-# Preview
+# Previe
 GET     /preview                                    controllers.Prismic.preview(token: String)
 
 # Map static resources from the /public folder to the /assets URL path

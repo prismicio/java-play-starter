@@ -8,12 +8,11 @@ scalaVersion := "2.11.6"
 
 resolvers += Resolver.mavenLocal
 
-libraryDependencies += "io.prismic" % "java-kit" % "1.2.4"
-
-libraryDependencies += javaWs
+libraryDependencies ++= Seq(
+  javaWs,
+  "io.prismic" % "java-kit" % "1.3.2"
+)
 
 TwirlKeys.templateImports += "controllers.Prismic._"
 
 lazy val root = (project in file(".")).enablePlugins(PlayJava)
-
-routesGenerator := InjectedRoutesGenerator
