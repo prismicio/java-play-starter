@@ -70,7 +70,7 @@ public class Application extends Controller {
   }
 
   // -- Page not found
-  Result pageNotFound() {
+  static Result pageNotFound() {
     return notFound("Page not found");
   }
 

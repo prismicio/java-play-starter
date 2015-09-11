@@ -1,4 +1,6 @@
 import io.prismic.Document;
+import org.hamcrest.CoreMatchers;
+import org.junit.Assert;
 import org.junit.Test;
 import play.twirl.api.Content;
 
@@ -6,7 +8,10 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static org.fest.assertions.Assertions.assertThat;
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 import static play.test.Helpers.contentAsString;
 import static play.test.Helpers.contentType;
 
@@ -22,7 +27,7 @@ public class ApplicationTest {
     @Test 
     public void simpleCheck() {
         int a = 1 + 1;
-        assertThat(a).isEqualTo(2);
+        assertThat(a, is(2));
     }
     
     @Test
@@ -30,8 +35,8 @@ public class ApplicationTest {
         Document document = new Document("id", "uid", "StructuredText", "href", Collections.<String>emptySet(), Arrays.asList("My super document"), Collections.emptyMap());
         List<Document> someDocuments = Arrays.asList(document);
         Content html = views.html.index.render(someDocuments);
-        assertThat(contentType(html)).isEqualTo("text/html");
-        assertThat(contentAsString(html)).contains("My super document");
+        assertThat(html.contentType(), is("text/html"));
+        assertThat(html.body(), containsString("My super document"));
     }
   
    
