@@ -1,77 +1,86 @@
 package controllers;
 
-import play.*;
-import play.mvc.*;
+import io.prismic.Document;
+import io.prismic.Predicates;
+import play.mvc.Controller;
+import play.mvc.Result;
+import prismic.Context;
+import prismic.Prismic;
+import prismic.QueryHelper;
 
-import java.util.*;
+import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
 
-import views.html.*;
-
-import io.prismic.*;
-import static controllers.Prismic.*;
+import static io.prismic.Prismic.PREVIEW_COOKIE;
+import static prismic.QueryHelper.DOCUMENT_NOT_FOUND;
 
 public class Application extends Controller {
 
-  // -- Home page
-  @Prismic.Action
-  public static Result index() {
-    List<Document> someDocuments = prismic().getApi().getForm("everything").ref(prismic().getRef()).submit().getResults();
-    return ok(views.html.index.render(someDocuments));
-  }
+    @Inject
+    private Prismic prismic;
 
-  // -- Document detail
-  @Prismic.Action
-  public static Result detail(String id, String slug) {
-    Document maybeDocument = prismic().getDocument(id);
-    String checked = prismic().checkSlug(maybeDocument, slug);
-    if(checked == null) {
-      for (String key: maybeDocument.getFragments().keySet()) {
-        System.out.println("Got key: " + key);
-      }
-      return ok(views.html.detail.render(maybeDocument));
-    }
-    else if(DOCUMENT_NOT_FOUND.equals(checked)) {
-      return pageNotFound();
-    }
-    else {
-      return redirect(routes.Application.detail(id, checked));
-    }
-  }
+    @Inject
+    private QueryHelper queryHelper;
 
-  // -- Basic Search
-  @Prismic.Action
-  public static Result search(String q) {
-    List<Document> results = new ArrayList<Document>();
-    if(q != null && !q.trim().isEmpty()) {
-      results = prismic().getApi().getForm("everything").query(Predicates.fulltext("document", q)).ref(prismic().getRef()).submit().getResults();
-    }
-    return ok(views.html.search.render(q, results));
-  }
-
-  // ---- Links
-
-  // -- Resolve links to documents
-  public static LinkResolver linkResolver(Api api, Http.Request request) {
-    return new LinkResolver(api, request);
-  }
-
-  public static class LinkResolver extends SimpleLinkResolver {
-    final Api api;
-    final Http.Request request;
-
-    public LinkResolver(Api api, Http.Request request) {
-      this.api = api;
-      this.request = request;
+    // -- Home page
+    @prismic.Action
+    public Result index() {
+        Context prismicContext = prismic.getContext();
+        List<Document> someDocuments = prismicContext
+                .getApi()
+                .getForm("everything")
+                .ref(prismicContext.getRef())
+                .submit()
+                .getResults();
+        return ok(views.html.index.render(someDocuments));
     }
 
-    public String resolve(Fragment.DocumentLink link) {
-      return routes.Application.detail(link.getId(), link.getSlug()).absoluteURL(request);
+    // -- Document detail
+    @prismic.Action
+    public Result detail(String id, String slug) {
+        Context prismicContext = prismic.getContext();
+        Document maybeDocument = queryHelper.getDocument(prismicContext, id);
+        String checked = queryHelper.checkSlug(maybeDocument, slug);
+        if (checked == null) {
+            return ok(views.html.detail.render(maybeDocument, prismicContext.getLinkResolver()));
+        } else if (DOCUMENT_NOT_FOUND.equals(checked)) {
+            return pageNotFound();
+        } else {
+            return redirect(controllers.routes.Application.detail(id, checked));
+        }
     }
-  }
 
-  // -- Page not found
-  static Result pageNotFound() {
-    return notFound("Page not found");
-  }
+    // -- Basic Search
+    @prismic.Action
+    public Result search(String q) {
+        List<Document> results = new ArrayList<Document>();
+        Context prismicContext = prismic.getContext();
+        if (q != null && !q.trim().isEmpty()) {
+            results = prismicContext
+                    .getApi()
+                    .getForm("everything")
+                    .query(Predicates.fulltext("document", q))
+                    .ref(prismicContext.getRef())
+                    .submit()
+                    .getResults();
+        }
+        return ok(views.html.search.render(q, results, prismicContext.getLinkResolver()));
+    }
+
+    // -- Previews
+    @prismic.Action
+    public Result preview(String token) {
+        String indexUrl = controllers.routes.Application.index().url();
+        Context prismicContext = prismic.getContext();
+        String url = prismicContext.getApi().previewSession(token, prismicContext.getLinkResolver(), indexUrl);
+        response().setCookie(PREVIEW_COOKIE, token, 1800);
+        return redirect(url);
+    }
+
+    // -- Page not found
+    Result pageNotFound() {
+        return notFound("Page not found");
+    }
 
 }

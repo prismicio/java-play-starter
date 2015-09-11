@@ -13,6 +13,7 @@
     This configures the log level to log at for a package and its children packages.
   -->
   <logger name="play" level="WARN" />
+  <logger name="prismic" level="DEBUG" />
   <logger name="application" level="DEBUG" />
 
   <root level="ERROR">

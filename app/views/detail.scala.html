@@ -1,9 +1,9 @@
-@(document: io.prismic.Document)
+@(document: io.prismic.Document, linkResolver: prismic.LinkResolver)
 
 @main(s"Document detail ${document.getSlug()}") {
 
     <article id="@document.getId()">
-      @Html(document.asHtml(prismic.getLinkResolver()))
+      @Html(document.asHtml(linkResolver))
     </article>
 
 }

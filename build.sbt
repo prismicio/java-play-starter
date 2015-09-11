@@ -13,6 +13,8 @@ libraryDependencies ++= Seq(
   "io.prismic" % "java-kit" % "1.3.2"
 )
 
-TwirlKeys.templateImports += "controllers.Prismic._"
+TwirlKeys.templateImports += "prismic.Context._"
 
 lazy val root = (project in file(".")).enablePlugins(PlayJava)
+
+routesGenerator := InjectedRoutesGenerator
