@@ -18,4 +18,5 @@ public class LinkResolver extends SimpleLinkResolver {
     public String resolve(Fragment.DocumentLink link) {
         return controllers.routes.Application.detail(link.getId(), link.getSlug()).absoluteURL(request);
     }
+
 }
