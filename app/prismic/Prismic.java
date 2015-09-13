@@ -19,5 +19,4 @@ public class Prismic extends io.prismic.Prismic {
         return ctx;
     }
 
-
 }
