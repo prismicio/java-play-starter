@@ -1,6 +1,7 @@
 package prismic;
 
 public class Logger implements io.prismic.Logger {
+
     public void log(String level, String message) {
         play.Logger.ALogger logger = play.Logger.of("prismic");
         if ("DEBUG".equals(level)) {

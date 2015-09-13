@@ -10,7 +10,8 @@ resolvers += Resolver.mavenLocal
 
 libraryDependencies ++= Seq(
   javaWs,
-  "io.prismic" % "java-kit" % "1.3.2"
+  "io.prismic" % "java-kit" % "1.3.2",
+  "org.mockito" % "mockito-core" % "1.10.19"
 )
 
 TwirlKeys.templateImports += "prismic.Context._"
