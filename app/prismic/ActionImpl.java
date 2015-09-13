@@ -2,6 +2,8 @@ package prismic;
 
 import io.prismic.Api;
 import io.prismic.Cache;
+import io.prismic.Ref;
+import org.apache.commons.lang3.StringUtils;
 import play.Configuration;
 import play.libs.F;
 import play.mvc.Controller;
@@ -31,10 +33,10 @@ public class ActionImpl extends play.mvc.Action<Action> {
     /**
      * Enrich the Play session (a.k.a. HTTP Context) with a Prismic Context containing
      * <ul>
-     *     <li>an instance of Api</li>
-     *     <li>the Ref to be used (i.e. Master, a Release one, Preview or Experiment)</li>
-     *     <li>an access token (for private or restricted repository)</li>
-     *     <li>an instance of LinkResolver</li>
+     * <li>an instance of Api</li>
+     * <li>the Ref to be used (i.e. Master, a Release one, Preview or Experiment)</li>
+     * <li>an access token (for private or restricted repository)</li>
+     * <li>an instance of LinkResolver</li>
      * </ul>
      * before calling the annotated method.
      */
@@ -73,6 +75,17 @@ public class ActionImpl extends play.mvc.Action<Action> {
     private String getPrismicRefFromPreviewOrExperimentCookieOrMaster(Http.Context ctx, Api api) {
         // By default, use Master ref
         String ref = api.getMaster().getRef();
+
+        String refLabel = configuration.getString("prismic.ref");
+        if (StringUtils.isNotEmpty(refLabel)) {
+            Ref apiRef = api.getRef(refLabel);
+            if (apiRef == null) {
+                throw new RuntimeException("Ref label [" + refLabel + "] not found or visibility restricted (in that " +
+                        "case, change the API visibility or specify 'prismic.token' in your application.conf file)");
+            } else {
+                ref = apiRef.getRef();
+            }
+        }
 
         // In case of Preview request, use corresponding ref
         Http.Cookie previewCookie = ctx.request().cookie(PREVIEW_COOKIE);
