@@ -2,7 +2,7 @@ import play.twirl.sbt.Import._
 
 name := "prismicio-starter"
 
-version := "1.1"
+version := "2.0"
 
 scalaVersion := "2.11.6"
 
