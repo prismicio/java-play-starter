@@ -13,6 +13,9 @@ Edit the `conf/application.conf` file to make the application point to the corre
 # API endpoint
 prismic.api="https://lesbonneschoses.prismic.io/api"
 
+# If specified, this release ref label is used to query the repository
+# prismic.ref="St-Patrick specials"
+
 # If specified this token is used for all "guest" requests
 # prismic.token="xxx"
 
