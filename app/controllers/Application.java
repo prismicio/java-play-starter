@@ -8,29 +8,26 @@ import java.util.*;
 import views.html.*;
 
 import io.prismic.*;
-import static controllers.Prismic.*;
+import static prismic.Prismic.*;
 
 public class Application extends Controller {
 
   // -- Home page
-  @Prismic.Action
+  @prismic.Action
   public Result index() {
     List<Document> someDocuments = prismic().getApi().getForm("everything").ref(prismic().getRef()).submit().getResults();
     return ok(views.html.index.render(someDocuments));
   }
 
   // -- Document detail
-  @Prismic.Action
+  @prismic.Action
   public Result detail(String id, String slug) {
     Document maybeDocument = prismic().getDocument(id);
     String checked = prismic().checkSlug(maybeDocument, slug);
     if(checked == null) {
-      for (String key: maybeDocument.getFragments().keySet()) {
-        System.out.println("Got key: " + key);
-      }
-      return ok(views.html.detail.render(maybeDocument));
+      return ok(views.html.detail.render(maybeDocument, prismic().getLinkResolver()));
     }
-    else if(DOCUMENT_NOT_FOUND.equals(checked)) {
+    else if(prismic.Prismic.DOCUMENT_NOT_FOUND.equals(checked)) {
       return pageNotFound();
     }
     else {
@@ -39,13 +36,13 @@ public class Application extends Controller {
   }
 
   // -- Basic Search
-  @Prismic.Action
+  @prismic.Action
   public Result search(String q) {
     List<Document> results = new ArrayList<Document>();
     if(q != null && !q.trim().isEmpty()) {
       results = prismic().getApi().getForm("everything").query(Predicates.fulltext("document", q)).ref(prismic().getRef()).submit().getResults();
     }
-    return ok(views.html.search.render(q, results));
+    return ok(views.html.search.render(q, results, prismic().getLinkResolver()));
   }
 
   // ---- Links
@@ -72,6 +69,17 @@ public class Application extends Controller {
   // -- Page not found
   static Result pageNotFound() {
     return notFound("Page not found");
+  }
+
+  // --
+  // -- Previews
+  // --
+  @prismic.Action
+  public Result preview(String token) {
+    String indexUrl = controllers.routes.Application.index().url();
+    String url = prismic().getApi().previewSession(token, prismic().getLinkResolver(), indexUrl);
+    response().setCookie(io.prismic.Prismic.PREVIEW_COOKIE, token, 1800);
+    return redirect(url);
   }
 
 }

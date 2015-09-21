@@ -12,7 +12,7 @@ GET     /documents/$id<[-_a-zA-Z0-9]{16}>/:slug     controllers.Application.deta
 GET     /search                                     controllers.Application.search(q: String ?= null)
 
 # Preview
-GET     /preview                                    controllers.Prismic.preview(token: String)
+GET     /preview                                    controllers.Application.preview(token: String)
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file                               controllers.Assets.at(path="/public", file)

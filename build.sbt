@@ -13,7 +13,7 @@ libraryDependencies ++= Seq(
   "io.prismic" % "java-kit" % "1.3.2"
 )
 
-TwirlKeys.templateImports += "controllers.Prismic._"
+TwirlKeys.templateImports += "prismic._"
 
 routesGenerator := InjectedRoutesGenerator
 

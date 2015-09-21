@@ -1,4 +1,4 @@
-package controllers;
+package prismic;
 
 import play.*;
 import play.mvc.*;
@@ -16,10 +16,10 @@ import scala.util.control.*;
 public class Prismic extends Controller {
 
   // -- Define the key name to use for storing the Prismic.io access token into the Play session
-  private final static String ACCESS_TOKEN = "ACCESS_TOKEN";
+  final static String ACCESS_TOKEN = "ACCESS_TOKEN";
 
   // -- Define the key name to use for storing the Prismic context token into the request arguments
-  private final static String PRISMIC_CONTEXT = "PRISMIC_CONTEXT";
+  final static String PRISMIC_CONTEXT = "PRISMIC_CONTEXT";
 
   // -- Signal for Document not found
   public static final String DOCUMENT_NOT_FOUND = "DOCUMENT_NOT_FOUND".intern();
@@ -140,68 +140,6 @@ public class Prismic extends Controller {
       throw new RuntimeException("No Context API found - Is it a @Prismic.Action?");
     }
     return ctx;
-  }
-
-  // -- Prismic Action annotation
-  @With(Prismic.ActionImpl.class)
-  @Target({ElementType.TYPE, ElementType.METHOD})
-  @Retention(RetentionPolicy.RUNTIME)
-  public static @interface Action {}
-
-  public static class ActionImpl extends play.mvc.Action<Prismic.Action> {
-
-    public F.Promise<Result> call(Http.Context ctx) throws Throwable {
-      // Retrieve the accessToken from the Play session or from the configuration
-      String accessToken = ctx.session().get(ACCESS_TOKEN);
-      if(accessToken == null) {
-        accessToken = Play.application().configuration().getString("prismic.token");
-      }
-
-      // Retrieve the API
-      Api api = getApiHome(accessToken);
-
-      // Use the ref from the preview cookie, experiment cookie or master
-      String ref = api.getMaster().getRef();
-      Http.Cookie previewCookie = ctx.request().cookie(io.prismic.Prismic.PREVIEW_COOKIE);
-      Http.Cookie experimentCookie = ctx.request().cookie(io.prismic.Prismic.EXPERIMENTS_COOKIE);
-      if (previewCookie != null) {
-        ref = previewCookie.value();
-      } else if (experimentCookie != null) {
-        ref = api.getExperiments().refFromCookie(experimentCookie.value());
-      }
-
-      // Create the Prismic context
-      Prismic.Context prismicContext = new Prismic.Context(api, ref, accessToken, Application.linkResolver(api, ctx.request()));
-
-      // Strore it for future use
-      ctx.args.put(PRISMIC_CONTEXT, prismicContext);
-
-      // Go!
-      try {
-        return delegate.call(ctx);
-      } catch (Exception e) {
-        if ("1".equals(flash("clearing"))) {
-          // Prevent infinite redirect loop if the exception is not due to the preview cookie
-          return delegate.call(ctx);
-        } else {
-          response().discardCookie(io.prismic.Prismic.PREVIEW_COOKIE);
-          flash("clearing", "1");
-          return F.Promise.pure(redirect(routes.Application.index()));
-        }
-      }
-    }
-
-  }
-
-  // --
-  // -- Previews
-  // --
-  @Prismic.Action
-  public Result preview(String token) {
-    String indexUrl = controllers.routes.Application.index().url();
-    String url = prismic().api.previewSession(token, prismic().getLinkResolver(), indexUrl);
-    response().setCookie(io.prismic.Prismic.PREVIEW_COOKIE, token, 1800);
-    return redirect(url);
   }
 
 }

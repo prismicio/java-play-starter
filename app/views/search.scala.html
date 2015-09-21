@@ -1,4 +1,4 @@
-@(q: String, documents: java.util.List[io.prismic.Document])
+@(q: String, documents: java.util.List[io.prismic.Document], linkResolver: io.prismic.LinkResolver)
 
 @main("Search results") {
 
@@ -13,7 +13,7 @@
   <ul>
     @for(document <- documents) {
       <li>
-        <a href="@prismic.getLinkResolver().resolve(document)">@document.getSlug()</a>
+        <a href="@linkResolver.resolve(document)">@document.getSlug()</a>
       </li>
     }
   </ul>
