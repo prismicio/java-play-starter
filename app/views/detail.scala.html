@@ -2,7 +2,7 @@
 
 @main(s"Document detail ${document.getSlug()}") {
 
-    <article id="@document.getId()">
+    <article id="@document.getId()" data-wio-id="@document.getId()">
       @Html(document.asHtml(linkResolver))
     </article>
 

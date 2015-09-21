@@ -8,6 +8,15 @@
         <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/main.css")">
         <link rel="shortcut icon" type="image/png" href="@routes.Assets.at("images/favicon.png")">
         <script src="@routes.Assets.at("javascripts/jquery-1.9.0.min.js")" type="text/javascript"></script>
+        <script type="application/javascript">
+            @** Required for the edit button *@
+            window.prismic = {
+                endpoint: '@Prismic.getEndpoint()'
+            };
+        </script>
+        @** Required for previews, edit button and experiments *@
+        <script src="//static.cdn.prismic.io/prismic.min.js"></script>
+
     </head>
     <body>
 

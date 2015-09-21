@@ -51,9 +51,13 @@ public class Prismic extends Controller {
     return value;
   }
 
+  public static String getEndpoint() {
+      return config("prismic.api");
+  }
+
   // -- Fetch the API entry document
   public static Api getApiHome(String accessToken) {
-    return Api.get(config("prismic.api"), accessToken, CACHE, LOGGER);
+    return Api.get(getEndpoint(), accessToken, CACHE, LOGGER);
   }
 
   // -- A Prismic context that help to keep the reference to useful primisc.io contextual data
