@@ -2,7 +2,7 @@ import play.twirl.sbt.Import._
 
 name := "prismicio-starter"
 
-version := "1.1"
+version := "1.2"
 
 scalaVersion := "2.11.6"
 
@@ -10,7 +10,7 @@ resolvers += Resolver.mavenLocal
 
 libraryDependencies ++= Seq(
   javaWs,
-  "io.prismic" % "java-kit" % "1.3.2"
+  "io.prismic" % "java-kit" % "1.4.0"
 )
 
 TwirlKeys.templateImports += "prismic._"

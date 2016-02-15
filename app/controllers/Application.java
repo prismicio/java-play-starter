@@ -40,7 +40,7 @@ public class Application extends Controller {
   public Result search(String q) {
     List<Document> results = new ArrayList<Document>();
     if(q != null && !q.trim().isEmpty()) {
-      results = prismic().getApi().getForm("everything").query(Predicates.fulltext("document", q)).ref(prismic().getRef()).submit().getResults();
+      results = prismic().getApi().query(Predicates.fulltext("document", q)).ref(prismic().getRef()).submit().getResults();
     }
     return ok(views.html.search.render(q, results, prismic().getLinkResolver()));
   }
