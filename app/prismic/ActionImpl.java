@@ -30,13 +30,16 @@ public class ActionImpl extends play.mvc.Action<prismic.Action> {
     Api api = prismic.Prismic.getApiHome(accessToken);
 
     // Use the ref from the preview cookie, experiment cookie or master
-    String ref = api.getMaster().getRef();
+    String ref = null;
     Http.Cookie previewCookie = ctx.request().cookie(io.prismic.Prismic.PREVIEW_COOKIE);
     Http.Cookie experimentCookie = ctx.request().cookie(io.prismic.Prismic.EXPERIMENTS_COOKIE);
     if (previewCookie != null) {
       ref = previewCookie.value();
     } else if (experimentCookie != null) {
       ref = api.getExperiments().refFromCookie(experimentCookie.value());
+    }
+    if (ref == null) {
+      ref = api.getMaster().getRef();
     }
 
     // Create the Prismic context
